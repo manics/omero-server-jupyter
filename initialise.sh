@@ -14,7 +14,9 @@ if [ ! -d "$OMERODATA" ]; then
   createdb -O omero omero
   omego db init --serverdir=/opt/omero/server/OMERO.server --dbname=omero
 
+  echo "Creating omero.data.dir $OMERODATA"
   /opt/omero/server/OMERO.server/bin/omero config set omero.data.dir "$OMERODATA"
-
   mkdir -p "$OMERODATA"
 fi
+
+echo "Run 'omero admin start' to start OMERO.server"

@@ -20,5 +20,19 @@ RUN /opt/conda/envs/python2/bin/pip install omego && \
 # Already installed:
 # - IcePy (bioconda/zeroc-ice)
 
+RUN conda install -n python2 -y -q \
+    numpy \
+    Pillow \
+    'Django=1.8.*' \
+    gunicorn \
+    whitenoise && \
+    /opt/conda/envs/python2/bin/pip install -r /opt/omero/server/OMERO.server/share/web/requirements-py27.txt
+
+RUN pip install https://github.com/manics/jupyter-server-proxy/archive/more-config.zip
+
 COPY omero.sh /usr/local/bin/omero
-COPY initialise.sh /home/jovyan/
+COPY initialise.sh omero-web-proxy.sh omeroweb-5.4.9.patch /home/jovyan/
+COPY jupyter_notebook_config.py /home/jovyan/.jupyter/
+RUN cd /opt/omero/server/OMERO.server/lib/python && \
+    patch -p0 < ~/omeroweb-5.4.9.patch & \
+    omero config append omero.web.middleware '{"index": 0, "class": "whitenoise.middleware.WhiteNoiseMiddleware"}'

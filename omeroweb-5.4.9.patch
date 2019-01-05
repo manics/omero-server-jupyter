@@ -1,0 +1,29 @@
+diff -Nur omeroweb.orig/settings.py omeroweb/settings.py
+--- omeroweb.orig/settings.py	2019-01-04 22:47:04.503709786 +0000
++++ omeroweb/settings.py	2019-01-04 22:38:07.562551425 +0000
+@@ -1271,6 +1271,7 @@
+ # MIDDLEWARE_CLASSES: A tuple of middleware classes to use.
+ MIDDLEWARE_CLASSES = sort_properties_to_tuple(MIDDLEWARE_CLASSES_LIST)  # noqa
+
++WHITENOISE_STATIC_PREFIX = STATIC_URL
+
+ # Load server list and freeze
+ def load_server_list():
+diff -Nur omeroweb.orig/wsgi.py omeroweb/wsgi.py
+--- omeroweb.orig/wsgi.py	2019-01-04 22:47:04.656710401 +0000
++++ omeroweb/wsgi.py	2019-01-04 22:50:40.989588104 +0000
+@@ -38,7 +38,13 @@
+ # file. This includes Django's development server, if the WSGI_APPLICATION
+ # setting points here.
+ from django.core.wsgi import get_wsgi_application
+-application = get_wsgi_application()
++
++_application = get_wsgi_application()
++def application(environ, start_response):
++    fwd_ctx = environ.get('HTTP_X_FORWARDED_CONTEXT')
++    if fwd_ctx:
++        environ['SCRIPT_NAME'] = fwd_ctx
++    return _application(environ, start_response)
+
+ # Apply WSGI middleware here.
+ # from helloworld.wsgi import HelloWorldApplication
