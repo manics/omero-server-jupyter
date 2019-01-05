@@ -46,4 +46,6 @@ $omero config append --set omero.web.django_additional_settings '["LOGGING",
 $omero config set omero.web.static_url $BASE_URL/proxy/$PORT/static/
 $omero config set omero.web.application_server.port $PORT
 
+# Just in case OMERO.web is already running
+$omero web stop
 $omero web start --foreground
