@@ -1,12 +1,29 @@
 diff -Nur omeroweb.orig/settings.py omeroweb/settings.py
 --- omeroweb.orig/settings.py	2019-01-04 22:47:04.503709786 +0000
-+++ omeroweb/settings.py	2019-01-04 22:38:07.562551425 +0000
-@@ -1271,6 +1271,7 @@
++++ omeroweb/settings.py	2019-01-05 23:28:36.654512142 +0000
+@@ -770,6 +770,14 @@
+          parse_boolean,
+          ("If True, cors_origin_whitelist will not be used and all origins "
+           "will be authorized to make cross-site HTTP requests.")],
++
++    "omero.web.django_additional_settings":
++        ["DJANGO_ADDITIONAL_SETTINGS",
++         "[]",
++         json.loads,
++         ("Additional Django settings as list of key-value tuples. "
++          "Use this to set or override Django settings that aren't managed by "
++          "OMERO.web. E.g. ``[\"CUSTOM_KEY\", \"CUSTOM_VALUE\"]``")],
+ }
+ 
+ DEPRECATED_SETTINGS_MAPPINGS = {
+@@ -1271,6 +1279,9 @@
  # MIDDLEWARE_CLASSES: A tuple of middleware classes to use.
  MIDDLEWARE_CLASSES = sort_properties_to_tuple(MIDDLEWARE_CLASSES_LIST)  # noqa
-
-+WHITENOISE_STATIC_PREFIX = STATIC_URL
-
+ 
++for k, v in DJANGO_ADDITIONAL_SETTINGS:  # noqa
++    setattr(sys.modules[__name__], k, v)
++
+ 
  # Load server list and freeze
  def load_server_list():
 diff -Nur omeroweb.orig/wsgi.py omeroweb/wsgi.py
@@ -24,6 +41,6 @@ diff -Nur omeroweb.orig/wsgi.py omeroweb/wsgi.py
 +    if fwd_ctx:
 +        environ['SCRIPT_NAME'] = fwd_ctx
 +    return _application(environ, start_response)
-
+ 
  # Apply WSGI middleware here.
  # from helloworld.wsgi import HelloWorldApplication
