@@ -6,6 +6,8 @@ c.ServerProxy.servers = {
         'timeout': 120,
         'launcher_entry': {
             'enabled': True,
+            'icon_path': '/home/jovyan/.jupyter/omero-logomark.svg',
+            'title': 'OMERO.web',
         },
     },
 }

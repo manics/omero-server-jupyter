@@ -1,7 +1,7 @@
 FROM imagedata/jupyter-docker:0.9.0
 
 USER root
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 5E6DA83306132997 && \
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 5E6DA83306132997 && \
     /bin/echo "deb http://zeroc.com/download/Ice/3.6/ubuntu16.04 stable main" > /etc/apt/sources.list.d/zeroc.list && \
     /bin/echo -e 'Package: zeroc-*\nPin: origin zeroc.com\nPin-Priority: 1000' > /etc/apt/preferences.d/zeroc && \
     apt-get update && \
@@ -28,11 +28,20 @@ RUN conda install -n python2 -y -q \
     whitenoise && \
     /opt/conda/envs/python2/bin/pip install -r /opt/omero/server/OMERO.server/share/web/requirements-py27.txt
 
-RUN pip install https://github.com/manics/jupyter-server-proxy/archive/more-config.zip
+RUN pip install https://github.com/manics/jupyter-server-proxy/archive/more-config.zip && \
+    jupyter labextension install jupyterlab-server-proxy
 
 COPY omero.sh /usr/local/bin/omero
-COPY initialise.sh omero-web-proxy.sh omeroweb-5.4.9.patch /home/jovyan/
-COPY jupyter_notebook_config.py /home/jovyan/.jupyter/
-RUN cd /opt/omero/server/OMERO.server/lib/python && \
-    patch -p0 < ~/omeroweb-5.4.9.patch & \
+COPY \
+    initialise.sh \
+    jupyter_notebook_config.py \
+    omero-logomark.svg \
+    omero-web-proxy.sh \
+    omeroweb-5.4.9.patch \
+    /home/jovyan/
+RUN mv jupyter_notebook_config.py omero-logomark.svg /home/jovyan/.jupyter/ && \
+    cd /opt/omero/server/OMERO.server/lib/python && \
+    patch -p0 < ~/omeroweb-5.4.9.patch && \
     omero config append omero.web.middleware '{"index": 0, "class": "whitenoise.middleware.WhiteNoiseMiddleware"}'
+
+ENV JUPYTER_ENABLE_LAB=1
