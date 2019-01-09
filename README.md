@@ -17,10 +17,9 @@ If you get a timeout whilst launching OMERO.web refresh the page.
 ## Quickstart
 
 1. Launch the container.
-2. Start a terminal. Run `./intialise.sh` to start PostgreSQL and initialise OMERO.server. If you are running on mybinder.org run `./intialise.sh 2048` to configure OMERO to run with less memory.
-3. Start OMERO.server: `omero admin start`
-4. Start OMERO.web by clicking the OMERO.web launcher icon. This will launch a new tab. Login as user `root` password `omero`.
+2. Start OMERO.web by clicking the OMERO.web launcher icon. This will launch a new tab. Login as user `root` password `omero`.
 
+The container startup procedure uses a Docker container entrypoint that runs the `./intialise.sh` to start PostgreSQL and initialise OMERO.server and then start the OMERO.server by issuing the `omero admin start` command.
 
 ## Configuration
 
