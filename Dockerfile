@@ -28,7 +28,7 @@ RUN conda install -n python2 -y -q \
     whitenoise && \
     /opt/conda/envs/python2/bin/pip install -r /opt/omero/server/OMERO.server/share/web/requirements-py27.txt
 
-RUN pip install https://github.com/manics/jupyter-server-proxy/archive/more-config.zip && \
+RUN pip install https://github.com/manics/jupyter-server-proxy/archive/proxy-base-urls.zip && \
     jupyter labextension install jupyterlab-server-proxy
 
 COPY omero.sh /usr/local/bin/omero

@@ -47,7 +47,7 @@ if [ "$OMERO_WEB_STDOUT" = 1 ]; then
     }
   ]'
 fi
-$omero config set omero.web.static_url $BASE_URL/proxy/$PORT/static/
+$omero config set omero.web.static_url $BASE_URL/omeroweb/static/
 $omero config set omero.web.application_server.port $PORT
 
 # Just in case OMERO.web is already running
