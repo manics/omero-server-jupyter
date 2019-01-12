@@ -45,3 +45,10 @@ RUN mv jupyter_notebook_config.py omero-logomark.svg /home/jovyan/.jupyter/ && \
     omero config append omero.web.middleware '{"index": 0, "class": "whitenoise.middleware.WhiteNoiseMiddleware"}'
 
 ENV JUPYTER_ENABLE_LAB=1
+
+USER root
+COPY ./entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+USER jovyan
+ENTRYPOINT ["/entrypoint.sh"]
